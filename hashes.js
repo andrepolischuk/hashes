@@ -91,6 +91,7 @@
    * Set options
    * @param {String} name
    * @param {String} value
+   * @api private
    */
 
   var set = function(name, value) {
@@ -107,7 +108,7 @@
 
   function hashes(fn) {
 
-    if (typeof fn === 'function') {
+    if (typeof fn === 'function' && typeof callback !== 'function') {
       callback = fn;
       locationListener();
     }
@@ -118,6 +119,7 @@
    * Set options
    * @param {String|Object} name
    * @param {String} option
+   * @api public
    */
 
   hashes.set = function(name, value) {
