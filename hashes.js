@@ -46,11 +46,22 @@
 
   /**
    * Hash expression
+   * @return {RegExp}
    * @api private
    */
 
   var exp = function() {
     return new RegExp('^' + pref + '(.+)$');
+  };
+
+  /**
+   * Get current route
+   * @return {String}
+   * @api private
+   */
+
+  var getCurrentRoute = function() {
+    return window.location.hash.replace(exp(), "$1");
   };
 
   /**
@@ -60,7 +71,7 @@
 
   var locationListener = function() {
 
-    var current = window.location.hash.replace(exp(), "$1");
+    var current = getCurrentRoute();
 
     if (previous === current) {
       return false;
@@ -76,6 +87,7 @@
 
   /**
    * Hashes
+   * @param {Function} fn
    * @api public
    */
 
@@ -111,6 +123,14 @@
       window.location = route;
     }
   };
+
+  /**
+   * Current route
+   * @return {String}
+   * @api public
+   */
+
+  hashes.route = getCurrentRoute();
 
   /**
    * Hash change listener
