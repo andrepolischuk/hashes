@@ -6,16 +6,22 @@
   'use strict';
 
   /**
+   * Options
+   */
+
+  var options = {};
+
+  /**
    * Hash prefix
    */
 
-  var pref = '#';
+  options.pref = '#';
 
   /**
    * Index route
    */
 
-  var index = '/';
+  options.index = '/';
 
   /**
    * Previous route
@@ -37,21 +43,13 @@
     parseInt(navigator.userAgent.replace(/.*MSIE.(\d+)\..*/gi, "$1")) < 8;
 
   /**
-   * Start hash length check
-   */
-
-  if (window.location.hash.length < 2) {
-    window.location.hash = index;
-  }
-
-  /**
    * Hash expression
    * @return {RegExp}
    * @api private
    */
 
   var exp = function() {
-    return new RegExp('^' + pref + '(.+)$');
+    return new RegExp('^' + options.pref + '(.+)$');
   };
 
   /**
@@ -71,6 +69,10 @@
 
   var locationListener = function() {
 
+    if (window.location.hash.length <= options.pref.length) {
+      window.location.hash = options.pref + options.index;
+    }
+
     var current = getCurrentRoute();
 
     if (previous === current) {
@@ -83,6 +85,18 @@
       callback(current);
     }
 
+  };
+
+  /**
+   * Set options
+   * @param {String} name
+   * @param {String} value
+   */
+
+  var set = function(name, value) {
+    if (name in options) {
+      options[name] = value;
+    }
   };
 
   /**
@@ -101,6 +115,26 @@
   }
 
   /**
+   * Set options
+   * @param {String|Object} name
+   * @param {String} option
+   */
+
+  hashes.set = function(name, value) {
+
+    if (typeof name === 'object') {
+      for (var i in name) {
+        if (name.hasOwnProperty(i)) {
+          set(i, name[i]);
+        }
+      }
+    } else {
+      set(name, value);
+    }
+
+  };
+
+  /**
    * Internal redirect /index -> /#/index
    * @param {String} route
    * @api public
@@ -108,7 +142,7 @@
 
   hashes.redirectInternal = function(route) {
     if (!route) {
-      window.location.hash = pref + route;
+      window.location.hash = options.pref + route;
     }
   };
 
