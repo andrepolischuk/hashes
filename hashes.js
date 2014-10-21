@@ -165,6 +165,20 @@
    * Module exports
    */
 
-  window.hashes = hashes;
+  if (typeof define === 'function' && define.amd) {
 
-}();
+    define([], function() {
+      return hashes;
+    });
+
+  } else if (typeof module !== 'undefined' && module.exports) {
+
+    module.exports = hashes;
+
+  } else {
+
+    this.hashes = hashes;
+
+  }
+
+}.call(this);
