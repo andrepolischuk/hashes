@@ -108,9 +108,40 @@
 
   function hashes(fn) {
 
-    if (typeof fn === 'function' && typeof callback !== 'function') {
+    if (typeof callback === 'function') {
+      return false;
+    }
+
+    if (typeof fn === 'function') {
+
       callback = fn;
       locationListener();
+
+      if ('onhashchange' in window && !msie) {
+
+        if ('addEventListener' in window) {
+          window.addEventListener('hashchange', locationListener, false);
+        } else if ('attachEvent' in window) {
+          window.attachEvent('onhashchange', locationListener);
+        }
+
+      } else {
+
+        (function locationListenerIe(hash) {
+
+          if (hash !== window.location.hash) {
+            locationListener();
+            hash = window.location.hash;
+          }
+
+          setTimeout(function() {
+            locationListenerIe(hash);
+          }, 500);
+
+        })();
+
+      }
+
     }
 
   }
@@ -167,35 +198,6 @@
       window.location = route;
     }
   };
-
-  /**
-   * Hash change listener
-   */
-
-  if ('onhashchange' in window && !msie) {
-
-    if ('addEventListener' in window) {
-      window.addEventListener('hashchange', locationListener, false);
-    } else if ('attachEvent' in window) {
-      window.attachEvent('onhashchange', locationListener);
-    }
-
-  } else {
-
-    (function locationListenerIe(hash) {
-
-      if (hash !== window.location.hash) {
-        locationListener();
-        hash = window.location.hash;
-      }
-
-      setTimeout(function() {
-        locationListenerIe(hash);
-      }, 500);
-
-    })();
-
-  }
 
   /**
    * Module exports
