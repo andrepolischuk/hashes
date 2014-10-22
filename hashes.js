@@ -79,7 +79,7 @@
       return false;
     }
 
-    previous = current;
+    previous = hashes.route = current;
 
     if (typeof callback === 'function') {
       callback(current);
@@ -114,6 +114,14 @@
     }
 
   }
+
+  /**
+   * Current route
+   * @return {String}
+   * @api public
+   */
+
+  hashes.route = options.index;
 
   /**
    * Set options
@@ -159,14 +167,6 @@
       window.location = route;
     }
   };
-
-  /**
-   * Current route
-   * @return {String}
-   * @api public
-   */
-
-  hashes.route = getCurrentRoute();
 
   /**
    * Hash change listener
