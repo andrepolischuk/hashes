@@ -7,7 +7,7 @@
   Via script tag in page sources:
 
 ```html
-<script src="/static/js/hashes.min.js"></script>
+<script src="//cdn.rawgit.com/andrepolischuk/hashes/1.0.1/hashes.min.js"></script>
 ```
 
 ## API
