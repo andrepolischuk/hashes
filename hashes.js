@@ -1,7 +1,7 @@
 // Hashes © 2013-2014 Andrey Polischuk
 // https://github.com/andrepolischuk/hashes
 
-!function(undefined) {
+!function() {
 
   'use strict';
 
@@ -48,9 +48,9 @@
    * @api private
    */
 
-  var exp = function() {
+  function exp() {
     return new RegExp('^' + options.pref + '(.+)$');
-  };
+  }
 
   /**
    * Get current route
@@ -58,16 +58,16 @@
    * @api private
    */
 
-  var getCurrentRoute = function() {
+  function getCurrentRoute() {
     return window.location.hash.replace(exp(), "$1");
-  };
+  }
 
   /**
    * Hash change event callback
    * @api private
    */
 
-  var locationListener = function() {
+  function locationListener() {
 
     if (window.location.hash.length <= options.pref.length) {
       window.location.hash = options.pref + options.index;
@@ -76,7 +76,7 @@
     var current = getCurrentRoute();
 
     if (previous === current) {
-      return false;
+      return;
     }
 
     previous = hashes.route = current;
@@ -85,7 +85,7 @@
       callback(current);
     }
 
-  };
+  }
 
   /**
    * Set options
@@ -94,11 +94,11 @@
    * @api private
    */
 
-  var set = function(name, value) {
+  function set(name, value) {
     if (name in options) {
       options[name] = value;
     }
-  };
+  }
 
   /**
    * Hashes
@@ -109,7 +109,7 @@
   function hashes(fn) {
 
     if (typeof callback === 'function') {
-      return false;
+      return;
     }
 
     if (typeof fn === 'function') {
