@@ -4,7 +4,7 @@
 
 ## Instalation
 
-  Via script tag in page sources:
+  Browser:
 
 ```html
 <script src="//cdn.rawgit.com/andrepolischuk/hsh/1.1.0/hsh.min.js"></script>
