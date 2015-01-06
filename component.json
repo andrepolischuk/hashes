@@ -1,0 +1,16 @@
+{
+  "name": "hsh",
+  "description": "Micro client-side router",
+  "version": "1.0.1",
+  "keywords": [
+    "route",
+    "router",
+    "routes"
+  ],
+  "repository": "andrepolischuk/hsh",
+  "main" : "hsh.js",
+  "scripts" : [
+    "hsh.js"
+  ],
+  "license": "MIT"
+}
