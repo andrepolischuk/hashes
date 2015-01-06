@@ -1,0 +1,17 @@
+{
+  "name": "hsh",
+  "description": "Micro client-side router",
+  "version": "1.0.1",
+  "keywords": [
+    "route",
+    "router",
+    "routes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/andrepolischuk/hsh.git"
+  },
+  "main": "hsh.js",
+  "author": "Andrey Polischuk <andre.polischuk@gmail.com>",
+  "license": "MIT"
+}
