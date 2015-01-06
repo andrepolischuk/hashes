@@ -7,7 +7,19 @@
   Via script tag in page sources:
 
 ```html
-<script src="//cdn.rawgit.com/andrepolischuk/hsh/1.0.1/hsh.min.js"></script>
+<script src="//cdn.rawgit.com/andrepolischuk/hsh/1.1.0/hsh.min.js"></script>
+```
+
+  Component(1):
+
+```sh
+$ component install andrepolischuk/hsh
+```
+
+  Npm:
+
+```sh
+$ npm install hsh
 ```
 
 ## API
