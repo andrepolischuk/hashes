@@ -1,4 +1,4 @@
-# Hashes
+# Hsh
 
   Micro client-side router
 
@@ -7,48 +7,48 @@
   Via script tag in page sources:
 
 ```html
-<script src="//cdn.rawgit.com/andrepolischuk/hashes/1.0.1/hashes.min.js"></script>
+<script src="//cdn.rawgit.com/andrepolischuk/hsh/1.0.1/hsh.min.js"></script>
 ```
 
 ## API
 
-### hashes(fn)
+### hsh(fn)
 
   Initialize router with `fn` callback
 
 ```js
-hashes(function(route) {
+hsh(function(route) {
   console.log(route);
 });
 ```
 
-### hashes.set(name, value)
+### hsh.set(name, value)
 
-  Reset hashes option
+  Reset hsh option
 
   * `pref` - hash prefix, default `#`
   * `index` - index hash, default `#/`
 
-### hashes.set(options)
+### hsh.set(options)
 
-  Reset hashes options via options array
+  Reset hsh options via options array
 
 ```js
-hashes.set({
+hsh.set({
   'pref'  : '#!',
   'index' : '/index'
 });
 ```
 
-### hashes.redirectInternal(route)
+### hsh.redirectInternal(route)
 
   Internal redirect, example `/#/index`
 
-### hashes.redirectExternal(route)
+### hsh.redirectExternal(route)
 
   External redirect, example `/index`
 
-### hashes.route
+### hsh.route
 
   Return current route
 

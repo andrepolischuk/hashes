@@ -1,5 +1,5 @@
-// Hashes © 2013-2014 Andrey Polischuk
-// https://github.com/andrepolischuk/hashes
+// Hsh © 2013-2015 Andrey Polischuk
+// github.com/andrepolischuk/hsh
 
 !function() {
 
@@ -79,7 +79,7 @@
       return;
     }
 
-    previous = hashes.route = current;
+    previous = hsh.route = current;
 
     if (typeof callback === 'function') {
       callback(current);
@@ -101,12 +101,12 @@
   }
 
   /**
-   * Hashes
+   * Module
    * @param {Function} fn
    * @api public
    */
 
-  function hashes(fn) {
+  function hsh(fn) {
 
     if (typeof callback === 'function') {
       return;
@@ -152,7 +152,7 @@
    * @api public
    */
 
-  hashes.route = options.index;
+  hsh.route = options.index;
 
   /**
    * Set options
@@ -161,7 +161,7 @@
    * @api public
    */
 
-  hashes.set = function(name, value) {
+  hsh.set = function(name, value) {
 
     if (typeof name === 'object') {
       for (var i in name) {
@@ -181,7 +181,7 @@
    * @api public
    */
 
-  hashes.redirectInternal = function(route) {
+  hsh.redirectInternal = function(route) {
     if (!route) {
       window.location.hash = options.pref + route;
     }
@@ -193,7 +193,7 @@
    * @api public
    */
 
-  hashes.redirectExternal = function(route) {
+  hsh.redirectExternal = function(route) {
     if (!route) {
       window.location = route;
     }
@@ -206,16 +206,16 @@
   if (typeof define === 'function' && define.amd) {
 
     define([], function() {
-      return hashes;
+      return hsh;
     });
 
   } else if (typeof module !== 'undefined' && module.exports) {
 
-    module.exports = hashes;
+    module.exports = hsh;
 
   } else {
 
-    this.hashes = hashes;
+    this.hsh = hsh;
 
   }
 
