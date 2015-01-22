@@ -52,14 +52,18 @@
 
   function exp(path) {
 
+    if (path === '*') {
+      return new RegExp('^(.*)$');
+    }
+
     var pathExp = '^';
-    path = path === '*' ? '/' + path : path;
     path = path.split('/').splice(1);
 
     for (var i = 0; i < path.length; i++) {
-      pathExp += '/' + (path[i] === '*' ? '.*' : path[i]);
+      pathExp += '/' + path[i];
     }
 
+    pathExp = pathExp.replace(/([*])/g, "(.*)");
     pathExp += '$';
     return new RegExp(pathExp);
 
