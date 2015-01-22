@@ -57,7 +57,7 @@
     }
 
     var pathExp = '^';
-    path = path.split('/').splice(1);
+    path = path.split('/').splice(1, 1);
 
     for (var i = 0; i < path.length; i++) {
       pathExp += '/' + path[i];
@@ -94,6 +94,7 @@
    */
 
   function hashChangeListenerFix(hash) {
+
 
     if (hash !== location.hash) {
       hashChangeListener();
