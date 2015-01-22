@@ -30,6 +30,12 @@
   var routes = [];
 
   /**
+   * Window location
+   */
+
+  var location = window.location;
+
+  /**
    * onhashchange detection
    */
 
@@ -60,37 +66,17 @@
   }
 
   /**
-   * Get current route
-   * @return {String}
-   * @api private
-   */
-
-  function getCurrentRoute() {
-    return window.location.hash.replace(new RegExp([
-      '^',
-      options.pref,
-      '(.*)$'
-    ].join('')), "$1");
-  }
-
-  /**
    * Hash change event callback
    * @api private
    */
 
   function hashChangeListener() {
 
-    var current = getCurrentRoute();
-
-    if (hsh.route === current) {
-      return;
-    }
-
-    hsh.route = current;
+    hsh.route = location.hash.substr(options.pref.length);
 
     for (var i = 0; i < routes.length; i++) {
-      if (routes[i].exp.test(current)) {
-        routes[i].fn(current);
+      if (routes[i].exp.test(hsh.route)) {
+        routes[i].fn(hsh.route);
         break;
       }
     }
@@ -105,9 +91,9 @@
 
   function hashChangeListenerFix(hash) {
 
-    if (hash !== window.location.hash) {
+    if (hash !== location.hash) {
       hashChangeListener();
-      hash = window.location.hash;
+      hash = location.hash;
     }
 
     setTimeout(function() {
@@ -136,8 +122,8 @@
 
   function start() {
 
-    if (window.location.hash.length <= options.pref.length) {
-      window.location.hash = options.pref + options.index;
+    if (location.hash.length <= options.pref.length) {
+      location.hash = options.pref + options.index;
     }
 
     hashChangeListener();
@@ -212,7 +198,7 @@
 
   hsh.redirectInternal = function(route) {
     if (!route) {
-      window.location.hash = options.pref + route;
+      location.hash = options.pref + route;
     }
   };
 
@@ -224,7 +210,7 @@
 
   hsh.redirectExternal = function(route) {
     if (!route) {
-      window.location = route;
+      location = route;
     }
   };
 
