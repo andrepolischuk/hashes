@@ -24,10 +24,10 @@
   options.index = '/';
 
   /**
-   * Callback
+   * Routes
    */
 
-  var callback;
+  var routes = [];
 
   /**
    * onhashchange detection
@@ -39,12 +39,24 @@
 
   /**
    * Hash expression
-   * @return {RegExp}
+   * @param  {String} path
+   * @return {String}
    * @api private
    */
 
-  function exp() {
-    return new RegExp('^' + options.pref + '(.+)$');
+  function exp(path) {
+
+    var pathExp = '^';
+    path = path === '*' ? '/' + path : path;
+    path = path.split('/').splice(1);
+
+    for (var i = 0; i < path.length; i++) {
+      pathExp += '/' + (path[i] === '*' ? '.*' : path[i]);
+    }
+
+    pathExp += '$';
+    return new RegExp(pathExp);
+
   }
 
   /**
@@ -54,7 +66,11 @@
    */
 
   function getCurrentRoute() {
-    return window.location.hash.replace(exp(), "$1");
+    return window.location.hash.replace(new RegExp([
+      '^',
+      options.pref,
+      '(.*)$'
+    ].join('')), "$1");
   }
 
   /**
@@ -72,8 +88,11 @@
 
     hsh.route = current;
 
-    if (typeof callback === 'function') {
-      callback(current);
+    for (var i = 0; i < routes.length; i++) {
+      if (routes[i].exp.test(current)) {
+        routes[i].fn(current);
+        break;
+      }
     }
 
   }
@@ -135,18 +154,24 @@
 
   /**
    * Module
+   * @param {String} path
    * @param {Function} fn
    * @api public
    */
 
-  function hsh(fn) {
+  function hsh(path, fn) {
 
-    if (typeof callback === 'function') {
-      return;
+    if (typeof path === 'function') {
+      return hsh('*', path);
     }
 
     if (typeof fn === 'function') {
-      callback = fn;
+      var route = {};
+      route.path = path;
+      route.exp = exp(path);
+      route.fn = fn;
+      routes.push(route);
+    } else {
       start();
     }
 
