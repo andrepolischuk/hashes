@@ -24,23 +24,18 @@
   options.index = '/';
 
   /**
-   * Previous route
-   */
-
-  var previous;
-
-  /**
    * Callback
    */
 
   var callback;
 
   /**
-   * MSIE 8- detection
+   * onhashchange detection
    */
 
-  var msie = /MSIE.\d+\./gi.test(navigator.userAgent) &&
-    parseInt(navigator.userAgent.replace(/.*MSIE.(\d+)\..*/gi, "$1")) < 8;
+  var hashChangeDetect = 'onhashchange' in window &&
+    !(/MSIE.\d+\./gi.test(navigator.userAgent) &&
+    parseInt(navigator.userAgent.replace(/.*MSIE.(\d+)\..*/gi, "$1")) < 8);
 
   /**
    * Hash expression
@@ -67,23 +62,38 @@
    * @api private
    */
 
-  function locationListener() {
-
-    if (window.location.hash.length <= options.pref.length) {
-      window.location.hash = options.pref + options.index;
-    }
+  function hashChangeListener() {
 
     var current = getCurrentRoute();
 
-    if (previous === current) {
+    if (hsh.route === current) {
       return;
     }
 
-    previous = hsh.route = current;
+    hsh.route = current;
 
     if (typeof callback === 'function') {
       callback(current);
     }
+
+  }
+
+  /**
+   * Fix hash change event for IE7-
+   * @param {String} hash
+   * @api private
+   */
+
+  function hashChangeListenerFix(hash) {
+
+    if (hash !== window.location.hash) {
+      hashChangeListener();
+      hash = window.location.hash;
+    }
+
+    setTimeout(function() {
+      hashChangeListenerFix(hash);
+    }, 500);
 
   }
 
@@ -101,6 +111,29 @@
   }
 
   /**
+   * Start listener
+   * @api private
+   */
+
+  function start() {
+
+    if (window.location.hash.length <= options.pref.length) {
+      window.location.hash = options.pref + options.index;
+    }
+
+    hashChangeListener();
+
+    if (!hashChangeDetect) {
+      hashChangeListenerFix();
+    } else if ('addEventListener' in window) {
+      window.addEventListener('hashchange', hashChangeListener, false);
+    } else {
+      window.attachEvent('onhashchange', hashChangeListener);
+    }
+
+  }
+
+  /**
    * Module
    * @param {Function} fn
    * @api public
@@ -113,35 +146,8 @@
     }
 
     if (typeof fn === 'function') {
-
       callback = fn;
-      locationListener();
-
-      if ('onhashchange' in window && !msie) {
-
-        if ('addEventListener' in window) {
-          window.addEventListener('hashchange', locationListener, false);
-        } else if ('attachEvent' in window) {
-          window.attachEvent('onhashchange', locationListener);
-        }
-
-      } else {
-
-        (function locationListenerIe(hash) {
-
-          if (hash !== window.location.hash) {
-            locationListener();
-            hash = window.location.hash;
-          }
-
-          setTimeout(function() {
-            locationListenerIe(hash);
-          }, 500);
-
-        })();
-
-      }
-
+      start();
     }
 
   }
@@ -152,7 +158,7 @@
    * @api public
    */
 
-  hsh.route = options.index;
+  hsh.route = null;
 
   /**
    * Set options
@@ -162,7 +168,6 @@
    */
 
   hsh.set = function(name, value) {
-
     if (typeof name === 'object') {
       for (var i in name) {
         if (name.hasOwnProperty(i)) {
@@ -172,7 +177,6 @@
     } else {
       set(name, value);
     }
-
   };
 
   /**
@@ -204,19 +208,11 @@
    */
 
   if (typeof define === 'function' && define.amd) {
-
-    define([], function() {
-      return hsh;
-    });
-
+    define([], function() { return hsh; });
   } else if (typeof module !== 'undefined' && module.exports) {
-
     module.exports = hsh;
-
   } else {
-
     this.hsh = hsh;
-
   }
 
 }.call(this);
