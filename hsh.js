@@ -44,28 +44,70 @@
     parseInt(navigator.userAgent.replace(/.*MSIE.(\d+)\..*/gi, "$1")) < 8);
 
   /**
-   * Hash expression
+   * Expression
    * @param  {String} path
    * @return {String}
    * @api private
    */
 
-  function exp(path) {
+  function pathRegExp(path) {
 
     if (path === '*') {
-      return new RegExp('^(.*)$');
+      return new RegExp('^.*$');
     }
 
     var pathExp = '^';
-    path = path.split('/').splice(1, path.length - 1);
+    path = path.split('/').splice(1, path.length);
 
     for (var i = 0; i < path.length; i++) {
-      pathExp += '/' + path[i];
+      pathExp += '/' + path[i].replace(/([*])/g, ".*")
+        .replace(/(:[A-Za-z0-9]+)/g, "(.+)");
     }
 
-    pathExp = pathExp.replace(/([*])/g, ".*");
     pathExp += '$';
     return new RegExp(pathExp);
+
+  }
+
+  /**
+   * Path parameters
+   * @param  {String} path
+   * @return {Array}
+   * @api private
+   */
+
+  function pathParams(path) {
+    var params = path.match(/:([A-Za-z0-9]+)/g) || [];
+    for (var i = 0; i < params.length; i++) {
+      params[i] = params[i].substr(1);
+    }
+    return params;
+  }
+
+  /**
+   * Create context
+   * @param  {Object} route
+   * @return {Object}
+   * @api private
+   */
+
+  function context(route) {
+
+    var values = hsh.route.match(route.exp);
+
+    if (!values) {
+      return;
+    }
+
+    var ctx = {};
+    ctx.route = hsh.route;
+    ctx.params = {};
+
+    for (var i = 0; i < route.params.length; i++) {
+      ctx.params[route.params[i]] = values[i + 1];
+    }
+
+    return ctx;
 
   }
 
@@ -78,9 +120,10 @@
 
     hsh.route = location.hash.substr(options.pref.length);
 
-    for (var i = 0; i < routes.length; i++) {
-      if (routes[i].exp.test(hsh.route)) {
-        routes[i].fn(hsh.route);
+    for (var i = 0, ctx; i < routes.length; i++) {
+      ctx = context(routes[i]);
+      if (ctx) {
+        routes[i].fn.call(ctx);
         break;
       }
     }
@@ -94,7 +137,6 @@
    */
 
   function hashChangeListenerFix(hash) {
-
 
     if (hash !== location.hash) {
       hashChangeListener();
@@ -159,7 +201,8 @@
     if (typeof fn === 'function') {
       var route = {};
       route.path = path;
-      route.exp = exp(path);
+      route.exp = pathRegExp(path);
+      route.params = pathParams(path);
       route.fn = fn;
       routes.push(route);
     } else {
