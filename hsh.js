@@ -38,34 +38,20 @@
     parseInt(navigator.userAgent.replace(/.*MSIE.(\d+)\..*/gi, "$1")) < 8);
 
   /**
-   * Route
-   * @param {String} path
-   * @param {Function} fn
-   * @api private
-   */
-
-  function Route(path, fn) {
-    this.path = path;
-    this.exp = this.pathRegExp();
-    this.params = this.pathParams();
-    this.fn = fn;
-  }
-
-  /**
    * Path expression
    * @param  {String} path
    * @return {String}
    * @api private
    */
 
-  Route.prototype.pathRegExp = function() {
+  function pathRegExp(path) {
 
-    if (this.path === '*') {
+    if (path === '*') {
       return new RegExp('^.*$');
     }
 
     var pathExp = '^';
-    var path = this.path.split('/').splice(1, this.path.length);
+    path = path.split('/').splice(1, path.length);
 
     for (var i = 0; i < path.length; i++) {
       pathExp += '/' + path[i].replace(/([*])/g, ".*")
@@ -75,7 +61,7 @@
     pathExp += '$';
     return new RegExp(pathExp);
 
-  };
+  }
 
   /**
    * Path parameters
@@ -84,9 +70,9 @@
    * @api private
    */
 
-  Route.prototype.pathParams = function() {
+  function pathParams(path) {
 
-    var params = this.path.match(/:([A-Za-z0-9]+)/g) || [];
+    var params = path.match(/:([A-Za-z0-9]+)/g) || [];
 
     for (var i = 0; i < params.length; i++) {
       params[i] = params[i].substr(1);
@@ -94,7 +80,21 @@
 
     return params;
 
-  };
+  }
+
+  /**
+   * Route
+   * @param {String} path
+   * @param {Function} fn
+   * @api private
+   */
+
+  function Route(path, fn) {
+    this.path = path;
+    this.exp = pathRegExp(this.path);
+    this.params = pathParams(this.path);
+    this.fn = fn;
+  }
 
   /**
    * Context
