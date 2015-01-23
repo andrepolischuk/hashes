@@ -57,13 +57,13 @@
     }
 
     var pathExp = '^';
-    path = path.split('/').splice(1, 1);
+    path = path.split('/').splice(1, path.length - 1);
 
     for (var i = 0; i < path.length; i++) {
       pathExp += '/' + path[i];
     }
 
-    pathExp = pathExp.replace(/([*])/g, "(.*)");
+    pathExp = pathExp.replace(/([*])/g, ".*");
     pathExp += '$';
     return new RegExp(pathExp);
 
