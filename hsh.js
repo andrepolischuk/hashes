@@ -24,12 +24,6 @@
   options.index = '/';
 
   /**
-   * Routes
-   */
-
-  var routes = [];
-
-  /**
    * Window location
    */
 
@@ -135,10 +129,10 @@
 
     hsh.current = location.hash.substr(options.pref.length);
 
-    for (var i = 0, ctx; i < routes.length; i++) {
-      ctx = new Context(routes[i]);
+    for (var i = 0, ctx; i < hsh.routes.length; i++) {
+      ctx = new Context(hsh.routes[i]);
       if ('route' in ctx) {
-        routes[i].fn.call(ctx);
+        hsh.routes[i].fn.call(ctx);
         break;
       }
     }
@@ -214,7 +208,7 @@
     }
 
     if (typeof fn === 'function') {
-      routes.push(new Route(path, fn));
+      hsh.routes.push(new Route(path, fn));
     } else {
       start();
     }
@@ -223,11 +217,17 @@
 
   /**
    * Current path
-   * @return {String}
    * @api public
    */
 
   hsh.current = null;
+
+  /**
+   * Routes
+   * @api public
+   */
+
+  hsh.routes = [];
 
   /**
    * Set options
