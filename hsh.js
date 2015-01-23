@@ -111,13 +111,13 @@
 
   function Context(route) {
 
-    var values = hsh.route.match(route.exp);
+    var values = hsh.current.match(route.exp);
 
     if (!values) {
       return;
     }
 
-    this.route = hsh.route;
+    this.route = hsh.current;
     this.params = {};
 
     for (var i = 0; i < route.params.length; i++) {
@@ -133,7 +133,7 @@
 
   function hashChange() {
 
-    hsh.route = location.hash.substr(options.pref.length);
+    hsh.current = location.hash.substr(options.pref.length);
 
     for (var i = 0, ctx; i < routes.length; i++) {
       ctx = new Context(routes[i]);
@@ -227,7 +227,7 @@
    * @api public
    */
 
-  hsh.route = null;
+  hsh.current = null;
 
   /**
    * Set options
