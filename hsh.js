@@ -44,20 +44,34 @@
     parseInt(navigator.userAgent.replace(/.*MSIE.(\d+)\..*/gi, "$1")) < 8);
 
   /**
-   * Expression
+   * Route
+   * @param {String} path
+   * @param {Function} fn
+   * @api private
+   */
+
+  function Route(path, fn) {
+    this.path = path;
+    this.exp = this.pathRegExp();
+    this.params = this.pathParams();
+    this.fn = fn;
+  }
+
+  /**
+   * Path expression
    * @param  {String} path
    * @return {String}
    * @api private
    */
 
-  function pathRegExp(path) {
+  Route.prototype.pathRegExp = function() {
 
-    if (path === '*') {
+    if (this.path === '*') {
       return new RegExp('^.*$');
     }
 
     var pathExp = '^';
-    path = path.split('/').splice(1, path.length);
+    var path = this.path.split('/').splice(1, this.path.length);
 
     for (var i = 0; i < path.length; i++) {
       pathExp += '/' + path[i].replace(/([*])/g, ".*")
@@ -67,7 +81,7 @@
     pathExp += '$';
     return new RegExp(pathExp);
 
-  }
+  };
 
   /**
    * Path parameters
@@ -76,22 +90,26 @@
    * @api private
    */
 
-  function pathParams(path) {
-    var params = path.match(/:([A-Za-z0-9]+)/g) || [];
+  Route.prototype.pathParams = function() {
+
+    var params = this.path.match(/:([A-Za-z0-9]+)/g) || [];
+
     for (var i = 0; i < params.length; i++) {
       params[i] = params[i].substr(1);
     }
+
     return params;
-  }
+
+  };
 
   /**
-   * Create context
+   * Context
    * @param  {Object} route
    * @return {Object}
    * @api private
    */
 
-  function context(route) {
+  function Context(route) {
 
     var values = hsh.route.match(route.exp);
 
@@ -99,30 +117,27 @@
       return;
     }
 
-    var ctx = {};
-    ctx.route = hsh.route;
-    ctx.params = {};
+    this.route = hsh.route;
+    this.params = {};
 
     for (var i = 0; i < route.params.length; i++) {
-      ctx.params[route.params[i]] = values[i + 1];
+      this.params[route.params[i]] = values[i + 1];
     }
-
-    return ctx;
 
   }
 
   /**
-   * Hash change event callback
+   * Hash change handler
    * @api private
    */
 
-  function hashChangeListener() {
+  function hashChange() {
 
     hsh.route = location.hash.substr(options.pref.length);
 
     for (var i = 0, ctx; i < routes.length; i++) {
-      ctx = context(routes[i]);
-      if (ctx) {
+      ctx = new Context(routes[i]);
+      if ('route' in ctx) {
         routes[i].fn.call(ctx);
         break;
       }
@@ -131,20 +146,20 @@
   }
 
   /**
-   * Fix hash change event for IE7-
-   * @param {String} hash
+   * Fix hash change for IE7-
+   * @param {String} path
    * @api private
    */
 
-  function hashChangeListenerFix(hash) {
+  function hashChangeFix(path) {
 
-    if (hash !== location.hash) {
-      hashChangeListener();
-      hash = location.hash;
+    if (path !== location.hash) {
+      hashChange();
+      path = location.hash;
     }
 
     setTimeout(function() {
-      hashChangeListenerFix(hash);
+      hashChangeFix(path);
     }, 500);
 
   }
@@ -173,14 +188,14 @@
       location.hash = options.pref + options.index;
     }
 
-    hashChangeListener();
+    hashChange();
 
     if (!hashChangeDetect) {
-      hashChangeListenerFix();
+      hashChangeFix();
     } else if ('addEventListener' in window) {
-      window.addEventListener('hashchange', hashChangeListener, false);
+      window.addEventListener('hashchange', hashChange, false);
     } else {
-      window.attachEvent('onhashchange', hashChangeListener);
+      window.attachEvent('onhashchange', hashChange);
     }
 
   }
@@ -199,12 +214,7 @@
     }
 
     if (typeof fn === 'function') {
-      var route = {};
-      route.path = path;
-      route.exp = pathRegExp(path);
-      route.params = pathParams(path);
-      route.fn = fn;
-      routes.push(route);
+      routes.push(new Route(path, fn));
     } else {
       start();
     }
@@ -212,7 +222,7 @@
   }
 
   /**
-   * Current route
+   * Current path
    * @return {String}
    * @api public
    */
@@ -240,25 +250,25 @@
 
   /**
    * Internal redirect /index -> /#/index
-   * @param {String} route
+   * @param {String} path
    * @api public
    */
 
-  hsh.redirectInternal = function(route) {
-    if (!route) {
-      location.hash = options.pref + route;
+  hsh.redirectInternal = function(path) {
+    if (!path) {
+      location.hash = options.pref + path;
     }
   };
 
   /**
    * External redirect /index -> /index
-   * @param {String} route
+   * @param {String} path
    * @api public
    */
 
-  hsh.redirectExternal = function(route) {
-    if (!route) {
-      location = route;
+  hsh.redirectExternal = function(path) {
+    if (!path) {
+      location = path;
     }
   };
 
