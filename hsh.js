@@ -264,7 +264,7 @@
    * @api public
    */
 
-  hsh.redirectInternal = function(path) {
+  hsh.redirect = function(path) {
     if (path) {
       location.hash = options.pref + path;
     }
