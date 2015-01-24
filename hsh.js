@@ -46,6 +46,10 @@
 
   function pathRegExp(path) {
 
+    if (path instanceof RegExp) {
+      return path;
+    }
+
     if (path === '*') {
       return new RegExp('^.*$');
     }
@@ -54,7 +58,7 @@
     path = path.split('/').splice(1, path.length);
 
     for (var i = 0; i < path.length; i++) {
-      pathExp += '/' + path[i]
+      pathExp += '\\/' + path[i]
         .replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, "\\$1")
         .replace(/([*])/g, ".*")
         .replace(/(:\w+)/g, "(.+)");
@@ -73,6 +77,10 @@
    */
 
   function pathParams(path) {
+
+    if (path instanceof RegExp) {
+      return [];
+    }
 
     var params = path.match(/:(\w+)/g) || [];
 
@@ -116,8 +124,8 @@
     this.route = hsh.current;
     this.params = {};
 
-    for (var i = 0; i < route.params.length; i++) {
-      this.params[route.params[i]] = values[i + 1];
+    for (var i = 0; i < values.length - 1; i++) {
+      this.params[route.params[i] || i] = values[i + 1];
     }
 
   }
