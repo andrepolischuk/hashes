@@ -108,20 +108,21 @@
 
   /**
    * Context
+   * @param  {String} path
    * @param  {Object} route
    * @return {Object}
    * @api private
    */
 
-  function Context(route) {
+  function Context(path, route) {
 
-    var values = hsh.current.match(route.exp);
+    var values = path.match(route.exp);
 
     if (!values) {
       return;
     }
 
-    this.route = hsh.current;
+    this.route = path;
     this.params = {};
 
     for (var i = 0; i < values.length - 1; i++) {
@@ -136,17 +137,8 @@
    */
 
   function hashChange() {
-
     hsh.current = location.hash.substr(options.pref.length);
-
-    for (var i = 0, ctx; i < hsh.routes.length; i++) {
-      ctx = new Context(hsh.routes[i]);
-      if ('route' in ctx) {
-        hsh.routes[i].fn.call(ctx);
-        break;
-      }
-    }
-
+    hsh.show(hsh.current);
   }
 
   /**
@@ -219,6 +211,8 @@
 
     if (typeof fn === 'function') {
       hsh.routes.push(new Route(path, fn));
+    } else if (typeof path === 'string') {
+      hsh.show(path);
     } else {
       start();
     }
@@ -255,6 +249,22 @@
       }
     } else {
       set(name, value);
+    }
+  };
+
+  /**
+   * Show defined context
+   * @param {String} path
+   * @api private
+   */
+
+  hsh.show = function(path) {
+    for (var i = 0, ctx; i < hsh.routes.length; i++) {
+      ctx = new Context(path, hsh.routes[i]);
+      if ('route' in ctx) {
+        hsh.routes[i].fn.call(ctx);
+        break;
+      }
     }
   };
 
