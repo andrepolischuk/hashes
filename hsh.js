@@ -265,7 +265,7 @@
    */
 
   hsh.redirectInternal = function(path) {
-    if (!path) {
+    if (path) {
       location.hash = options.pref + path;
     }
   };
@@ -277,7 +277,7 @@
    */
 
   hsh.redirectExternal = function(path) {
-    if (!path) {
+    if (path) {
       location = path;
     }
   };
