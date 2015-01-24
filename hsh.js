@@ -54,8 +54,10 @@
     path = path.split('/').splice(1, path.length);
 
     for (var i = 0; i < path.length; i++) {
-      pathExp += '/' + path[i].replace(/([*])/g, ".*")
-        .replace(/(:[A-Za-z0-9]+)/g, "(.+)");
+      pathExp += '/' + path[i]
+        .replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, "\\$1")
+        .replace(/([*])/g, ".*")
+        .replace(/(:\w+)/g, "(.+)");
     }
 
     pathExp += '$';
@@ -72,7 +74,7 @@
 
   function pathParams(path) {
 
-    var params = path.match(/:([A-Za-z0-9]+)/g) || [];
+    var params = path.match(/:(\w+)/g) || [];
 
     for (var i = 0; i < params.length; i++) {
       params[i] = params[i].substr(1);
