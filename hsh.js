@@ -6,24 +6,6 @@
   'use strict';
 
   /**
-   * Options
-   */
-
-  var options = {};
-
-  /**
-   * Hash prefix
-   */
-
-  options.pref = '#';
-
-  /**
-   * Index route
-   */
-
-  options.index = '/';
-
-  /**
    * Window location
    */
 
@@ -137,7 +119,11 @@
    */
 
   function hashChange() {
-    hsh.current = location.hash.substr(options.pref.length);
+    hsh.current = location.hash.replace(new RegExp([
+      '^#',
+      hsh.prefix.replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, "\\$1"),
+      '(.+)$'
+    ].join('')), "$1");
     hsh.show(hsh.current);
   }
 
@@ -167,8 +153,8 @@
 
   function start() {
 
-    if (location.hash.length <= options.pref.length) {
-      location.hash = options.pref + options.index;
+    if (location.hash.length <= hsh.prefix.length) {
+      location.hash = hsh.prefix + '/';
     }
 
     hashChange();
@@ -205,6 +191,13 @@
   }
 
   /**
+   * Path prefix
+   * @api public
+   */
+
+  hsh.prefix = '';
+
+  /**
    * Current path
    * @api public
    */
@@ -221,7 +214,7 @@
   /**
    * Show defined context
    * @param {String} path
-   * @api private
+   * @api public
    */
 
   hsh.show = function(path) {
@@ -242,7 +235,7 @@
 
   hsh.redirect = function(path) {
     if (path) {
-      location.hash = options.pref + path;
+      location.hash = hsh.prefix + path;
     }
   };
 
