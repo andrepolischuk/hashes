@@ -98,14 +98,12 @@
 
   function Context(path, route) {
 
-    var values = path.match(route.exp);
-
-    if (!values) {
-      return;
-    }
-
-    this.route = path;
+    this.path = path;
+    this.origin = route.path;
+    this.exp = route.exp;
     this.params = {};
+
+    var values = path.match(route.exp);
 
     for (var i = 0; i < values.length - 1; i++) {
       this.params[route.params[i] || i] = values[i + 1];
@@ -218,10 +216,9 @@
    */
 
   hsh.show = function(path) {
-    for (var i = 0, ctx; i < hsh.routes.length; i++) {
-      ctx = new Context(path, hsh.routes[i]);
-      if ('route' in ctx) {
-        hsh.routes[i].fn.call(ctx);
+    for (var i = 0; i < hsh.routes.length; i++) {
+      if (path.match(hsh.routes[i].exp)) {
+        hsh.routes[i].fn.call(new Context(path, hsh.routes[i]));
         break;
       }
     }
