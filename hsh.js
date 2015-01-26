@@ -208,6 +208,8 @@
 
     if (typeof fn === 'function') {
       hsh.routes.push(new Route(path, fn));
+    } else if (typeof path === 'string') {
+      hsh.redirect(path);
     } else {
       start();
     }
