@@ -171,29 +171,6 @@
   }
 
   /**
-   * Start listener
-   * @api private
-   */
-
-  function start() {
-
-    if (location.hash.length <= hsh.prefix.length) {
-      location.hash = hsh.prefix + '/';
-    }
-
-    hashChange();
-
-    if (!hashChangeDetect) {
-      hashChangeFix();
-    } else if ('addEventListener' in window) {
-      window.addEventListener('hashchange', hashChange, false);
-    } else {
-      window.attachEvent('onhashchange', hashChange);
-    }
-
-  }
-
-  /**
    * Module
    * @param {String} path
    * @param {Function} fn
@@ -211,7 +188,7 @@
     } else if (typeof path === 'string') {
       hsh.redirect(path);
     } else {
-      start();
+      hsh.start();
     }
 
   }
@@ -275,6 +252,29 @@
     if (path) {
       location = path;
     }
+  };
+
+  /**
+   * Start listener
+   * @api public
+   */
+
+  hsh.start = function() {
+
+    if (location.hash.length <= hsh.prefix.length) {
+      location.hash = hsh.prefix + '/';
+    }
+
+    hashChange();
+
+    if (!hashChangeDetect) {
+      hashChangeFix();
+    } else if ('addEventListener' in window) {
+      window.addEventListener('hashchange', hashChange, false);
+    } else {
+      window.attachEvent('onhashchange', hashChange);
+    }
+
   };
 
   /**
