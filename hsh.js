@@ -75,6 +75,35 @@
   }
 
   /**
+   * Execute route
+   * @param  {String} path
+   * @param  {Object} route
+   * @return {Function}
+   * @api private
+   */
+
+  function exec(path, route) {
+
+    if (!route) {
+      return;
+    }
+
+    var params = path.match(route.exp);
+    var next = exec(path, hsh.routes[route.queue + 1]);
+
+    if (!params && next) {
+      return function() {
+        next();
+      };
+    }
+
+    return function() {
+      route.fn.call(new Context(path, route, params || []), next);
+    };
+
+  }
+
+  /**
    * Route
    * @param {String} path
    * @param {Function} fn
@@ -82,6 +111,7 @@
    */
 
   function Route(path, fn) {
+    this.queue = hsh.routes.length;
     this.path = path;
     this.exp = pathRegExp(this.path);
     this.params = pathParams(this.path);
@@ -92,23 +122,19 @@
    * Context
    * @param  {String} path
    * @param  {Object} route
+   * @param  {Array} params
    * @return {Object}
    * @api private
    */
 
-  function Context(path, route) {
-
+  function Context(path, route, params) {
     this.path = path;
     this.origin = route.path;
     this.exp = route.exp;
     this.params = {};
-
-    var values = path.match(route.exp);
-
-    for (var i = 0; i < values.length - 1; i++) {
-      this.params[route.params[i] || i] = values[i + 1];
+    for (var i = 0; i < params.length - 1; i++) {
+      this.params[route.params[i] || i] = params[i + 1];
     }
-
   }
 
   /**
@@ -216,12 +242,13 @@
    */
 
   hsh.show = function(path) {
-    for (var i = 0; i < hsh.routes.length; i++) {
-      if (path.match(hsh.routes[i].exp)) {
-        hsh.routes[i].fn.call(new Context(path, hsh.routes[i]));
-        break;
-      }
+
+    var next = exec(path, hsh.routes[0]);
+
+    if (next) {
+      next();
     }
+
   };
 
   /**
