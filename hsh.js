@@ -161,19 +161,6 @@
   }
 
   /**
-   * Set options
-   * @param {String} name
-   * @param {String} value
-   * @api private
-   */
-
-  function set(name, value) {
-    if (name in options) {
-      options[name] = value;
-    }
-  }
-
-  /**
    * Start listener
    * @api private
    */
@@ -232,25 +219,6 @@
    */
 
   hsh.routes = [];
-
-  /**
-   * Set options
-   * @param {String|Object} name
-   * @param {String} option
-   * @api public
-   */
-
-  hsh.set = function(name, value) {
-    if (typeof name === 'object') {
-      for (var i in name) {
-        if (name.hasOwnProperty(i)) {
-          set(i, name[i]);
-        }
-      }
-    } else {
-      set(name, value);
-    }
-  };
 
   /**
    * Show defined context
