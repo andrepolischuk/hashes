@@ -1,13 +1,13 @@
 # Hsh
 
-  Micro client-side router
+  Micro client-side router via hashchange
 
 ## Instalation
 
   Browser:
 
 ```html
-<script src="https://cdn.rawgit.com/andrepolischuk/hsh/1.1.0/hsh.min.js"></script>
+<script src="https://cdn.rawgit.com/andrepolischuk/hsh/2.0.0/hsh.min.js"></script>
 ```
 
   Component(1):

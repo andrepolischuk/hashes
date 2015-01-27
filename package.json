@@ -1,8 +1,10 @@
 {
   "name": "hsh",
-  "description": "Micro client-side router",
-  "version": "1.1.0",
+  "description": "Micro client-side router via hashchange",
+  "version": "2.0.0",
   "keywords": [
+    "hash",
+    "hashchange",
     "route",
     "router",
     "routes"
