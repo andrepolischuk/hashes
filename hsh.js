@@ -98,7 +98,7 @@
     }
 
     return function() {
-      route.fn.call(new Context(path, route, params), next);
+      route.fn(new Context(path, route, params), next);
     };
 
   }
