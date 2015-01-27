@@ -7,7 +7,7 @@
   Browser:
 
 ```html
-<script src="//cdn.rawgit.com/andrepolischuk/hsh/1.1.0/hsh.min.js"></script>
+<script src="https://cdn.rawgit.com/andrepolischuk/hsh/1.1.0/hsh.min.js"></script>
 ```
 
   Component(1):
@@ -24,45 +24,91 @@ $ npm install hsh
 
 ## API
 
-### hsh(fn)
+### hsh(path, callback)
 
-  Initialize router with `fn` callback
-
-```js
-hsh(function(route) {
-  console.log(route);
-});
-```
-
-### hsh.set(name, value)
-
-  Reset hsh option
-
-  * `pref` - hash prefix, default `#`
-  * `index` - index hash, default `#/`
-
-### hsh.set(options)
-
-  Reset hsh options via options array
+  Add `path` and `callback` to routing map.
+  Each callback takes 2 arguments: `context` and `next`.
 
 ```js
-hsh.set({
-  'pref'  : '#!',
-  'index' : '/index'
-});
+hsh('/', index);
+hsh('/about', about);
+hsh('*', notFound);
 ```
 
-### hsh.redirectInternal(route)
+### hsh(callback)
 
-  Internal redirect, example `/#/index`
+  Equivalent to `hsh('*', callback)`
 
-### hsh.redirectExternal(route)
+### hsh()
+
+  Start `hashchange` binding
+
+### hsh.start()
+
+  Equivalent to `hsh()`
+
+### hsh.show(path)
+
+  Calling `callback` to defined `path` without hash changing
+
+### hsh.redirect(path)
+
+  Internal redirect to `path`, example `/#/index`
+
+### hsh.redirectExternal(path)
 
   External redirect, example `/index`
 
-### hsh.route
+### hsh.current
 
-  Return current route
+  Return current path
+
+### hsh.prefix
+
+  Url prefix, default `''`
+
+  * `''` - `/#/page`
+  * `'!'` - `/#!/page`
+
+## Routing
+
+  Match to `/#/books`
+
+```js
+hsh('/books', list);
+```
+
+  Match to all paths prefixed with `/#/books`
+
+```js
+hsh('/books/*', show);
+hsh('/books/:name', show);
+hsh(/^\/books\/(.+)$/, show);
+```
+
+  Path `*` can be used after all for not found pages
+
+```js
+hsh('*', notFound);
+```
+
+## Context
+
+### path
+
+  Current page path
+
+### origin
+
+  Route path
+
+### exp
+
+  Route regular expression
+
+### params
+
+  Path parameters object
 
 ## Support
 
