@@ -13,6 +13,9 @@
     "type": "git",
     "url": "git://github.com/andrepolischuk/hsh.git"
   },
+  "dependencies": {
+    "eventhash": "^0.2.0"
+  },
   "main": "hsh.js",
   "author": "Andrey Polischuk <andre.polischuk@gmail.com>",
   "license": "MIT"
