@@ -1,3 +1,11 @@
+# 2.1.0 / 2015.03.25
+
+  * Add callbacks instead of routes
+  * Add running flag
+  * Add test
+  * Fix #6 next calling
+  * Extract components
+
 # 2.0.0 / 2015.01.27
 
   * Add route parser to define separate callbacks #4

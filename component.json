@@ -1,13 +1,10 @@
 {
   "name": "hsh",
   "description": "Micro client-side router via hashchange",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "keywords": [
-    "hash",
     "hashchange",
-    "route",
-    "router",
-    "routes"
+    "router"
   ],
   "repository": "andrepolischuk/hsh",
   "dependencies": {
@@ -16,9 +13,9 @@
   "development": {
     "component/assert": "^0.5.0"
   },
-  "main" : "hsh.js",
+  "main" : "index.js",
   "scripts" : [
-    "hsh.js"
+    "index.js"
   ],
   "license": "MIT"
 }

@@ -7,7 +7,7 @@
   Browser:
 
 ```html
-<script src="https://cdn.rawgit.com/andrepolischuk/hsh/2.0.0/hsh.min.js"></script>
+<script src="https://cdn.rawgit.com/andrepolischuk/hsh/2.1.0/hsh.min.js"></script>
 ```
 
   Component(1):
@@ -96,15 +96,7 @@ hsh('*', notFound);
 
 ### path
 
-  Current page path
-
-### origin
-
-  Route path
-
-### exp
-
-  Route regular expression
+  Current path
 
 ### params
 
@@ -112,8 +104,12 @@ hsh('*', notFound);
 
 ## Support
 
-* Internet Explorer 7+
-* Chrome
-* Safari
-* Firefox
-* Opera
+  * Internet Explorer 7+
+  * Chrome
+  * Safari
+  * Firefox
+  * Opera
+
+## License
+
+  MIT
