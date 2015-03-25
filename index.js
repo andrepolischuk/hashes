@@ -11,7 +11,7 @@ var eventhash = require('eventhash');
  * Location ref
  */
 
-var location = window.location;
+var loc = window.location;
 
 /**
  * Expose router
@@ -32,7 +32,8 @@ function hsh(path, fn) {
   }
 
   if (typeof fn === 'function') {
-    hsh.routes.push(new Route(path, fn));
+    var route = new Route(path, fn);
+    hsh.callbacks.push(route.callback());
   } else if (typeof path === 'string') {
     hsh.redirect(path);
   } else {
@@ -55,11 +56,11 @@ hsh.prefix = '';
 hsh.current = null;
 
 /**
- * Routes
+ * Callbacks
  * @api public
  */
 
-hsh.routes = [];
+hsh.callbacks = [];
 
 /**
  * Show defined context
@@ -68,8 +69,9 @@ hsh.routes = [];
  */
 
 hsh.show = function(path) {
-  var next = exec(path, hsh.routes[0]);
-  if (next) next();
+  var ctx = new Context(path);
+  hsh.current = path;
+  execute(ctx);
 };
 
 /**
@@ -79,7 +81,7 @@ hsh.show = function(path) {
  */
 
 hsh.redirect = function(path) {
-  if (path) location.hash = hsh.prefix + path;
+  if (path) loc.hash = hsh.prefix + path;
 };
 
 /**
@@ -89,7 +91,7 @@ hsh.redirect = function(path) {
  */
 
 hsh.redirectExternal = function(path) {
-  if (path) location = path;
+  if (path) loc = path;
 };
 
 /**
@@ -107,10 +109,9 @@ hsh.start = function() {
  */
 
 function hashChange() {
-  var path = location.hash.match(prefixRegExp());
+  var path = loc.hash.match(prefixRegExp());
   if (!path) return hsh.redirect(hsh.prefix + '/');
-  hsh.current = path[1];
-  hsh.show(hsh.current);
+  hsh.show(path[1]);
 }
 
 /**
@@ -122,34 +123,27 @@ function hashChange() {
 function prefixRegExp() {
   return new RegExp([
     '^#',
-    hsh.prefix.replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, "\\$1"),
+    hsh.prefix.replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, '\\$1'),
     '(.+)$'
   ].join(''));
 }
 
 /**
- * Execute route
- * @param  {String} path
- * @param  {Object} route
- * @return {Function}
+ * Execute context
+ * @param {Object} ctx
  * @api private
  */
 
-function exec(path, route) {
-  if (!route) return;
+function execute(ctx) {
+  var i = 0;
 
-  var params = path.match(route.exp);
-  var next = exec(path, hsh.routes[route.queue + 1]);
-
-  if (!params && next) {
-    return function() {
-      next();
-    };
+  function next() {
+    var fn = hsh.callbacks[i++];
+    if (!fn) return;
+    fn(ctx, next);
   }
 
-  return function() {
-    route.fn(new Context(path, route, params), next);
-  };
+  next();
 }
 
 /**
@@ -160,41 +154,65 @@ function exec(path, route) {
  */
 
 function Route(path, fn) {
-  this.queue = hsh.routes.length;
   this.path = path;
-  this.exp = pathRegExp(this.path);
-  this.params = pathParams(this.path);
+  this.regexp = pathToRegExp(path);
+  this.keys = pathToKeys(path);
   this.fn = fn;
 }
 
 /**
+ * Route callback
+ * @return {Function}
+ * @api private
+ */
+
+Route.prototype.callback = function() {
+  var self = this;
+  return function(ctx, next) {
+    if (self.match(ctx.path, ctx.params)) return self.fn(ctx, next);
+    next();
+  };
+};
+
+/**
+ * Route match
+ * @param  {String} path
+ * @param  {Object} params
+ * @return {Boolean}
+ * @api private
+ */
+
+Route.prototype.match = function(path, params) {
+  var pathParams = path.match(this.regexp);
+  if (!pathParams) return false;
+
+  for (var i = 0; i < pathParams.length - 1; i++) {
+    params[this.keys[i] || i] = pathParams[i + 1];
+  }
+
+  return true;
+};
+
+/**
  * Context
  * @param  {String} path
- * @param  {Object} route
- * @param  {Array} params
  * @return {Object}
  * @api private
  */
 
-function Context(path, route, params) {
+function Context(path) {
   this.path = path;
-  this.origin = route.path;
-  this.exp = route.exp;
   this.params = {};
-
-  for (var i = 0; i < params.length - 1; i++) {
-    this.params[route.params[i] || i] = params[i + 1];
-  }
 }
 
 /**
- * Path expression
+ * Convert path to RegExp
  * @param  {String} path
  * @return {String}
  * @api private
  */
 
-function pathRegExp(path) {
+function pathToRegExp(path) {
   if (path instanceof RegExp) return path;
   if (path === '*') return new RegExp('^.*$');
 
@@ -203,9 +221,9 @@ function pathRegExp(path) {
 
   for (var i = 0; i < path.length; i++) {
     pathExp += '\\/' + path[i]
-      .replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, "\\$1")
-      .replace(/([*])/g, ".*")
-      .replace(/(:\w+)/g, "(.+)");
+      .replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, '\\$1')
+      .replace(/([*])/g, '.*')
+      .replace(/(:\w+)/g, '(.+)');
   }
 
   pathExp += '$';
@@ -213,15 +231,14 @@ function pathRegExp(path) {
 }
 
 /**
- * Path parameters
+ * Convert path to keys array
  * @param  {String} path
  * @return {Array}
  * @api private
  */
 
-function pathParams(path) {
+function pathToKeys(path) {
   if (path instanceof RegExp) return [];
-
   var params = path.match(/:(\w+)/g) || [];
 
   for (var i = 0; i < params.length; i++) {
