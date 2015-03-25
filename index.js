@@ -14,6 +14,12 @@ var eventhash = require('eventhash');
 var loc = window.location;
 
 /**
+ * Running flag
+ */
+
+var running;
+
+/**
  * Expose router
  */
 
@@ -35,7 +41,7 @@ function hsh(path, fn) {
     var route = new Route(path, fn);
     hsh.callbacks.push(route.callback());
   } else if (typeof path === 'string') {
-    hsh.redirect(path);
+    hsh.show(path);
   } else {
     hsh.start();
   }
@@ -81,7 +87,7 @@ hsh.show = function(path) {
  */
 
 hsh.redirect = function(path) {
-  if (path) loc.hash = hsh.prefix + path;
+  if (typeof path === 'string') loc.hash = hsh.prefix + path;
 };
 
 /**
@@ -91,7 +97,7 @@ hsh.redirect = function(path) {
  */
 
 hsh.redirectExternal = function(path) {
-  if (path) loc = path;
+  if (typeof path === 'string') loc = path;
 };
 
 /**
@@ -100,7 +106,9 @@ hsh.redirectExternal = function(path) {
  */
 
 hsh.start = function() {
-  eventhash(hashChange)();
+  if (running) return;
+  running = true;
+  eventhash(onhashchange)();
 };
 
 /**
@@ -108,7 +116,7 @@ hsh.start = function() {
  * @api private
  */
 
-function hashChange() {
+function onhashchange() {
   var path = loc.hash.match(prefixRegExp());
   if (!path) return hsh.redirect(hsh.prefix + '/');
   hsh.show(path[1]);
@@ -144,6 +152,18 @@ function execute(ctx) {
   }
 
   next();
+}
+
+/**
+ * Context
+ * @param  {String} path
+ * @return {Object}
+ * @api private
+ */
+
+function Context(path) {
+  this.path = path;
+  this.params = {};
 }
 
 /**
@@ -192,18 +212,6 @@ Route.prototype.match = function(path, params) {
 
   return true;
 };
-
-/**
- * Context
- * @param  {String} path
- * @return {Object}
- * @api private
- */
-
-function Context(path) {
-  this.path = path;
-  this.params = {};
-}
 
 /**
  * Convert path to RegExp
