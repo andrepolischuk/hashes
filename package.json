@@ -16,6 +16,9 @@
   "dependencies": {
     "eventhash": "^0.2.0"
   },
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  },
   "main": "hsh.js",
   "author": "Andrey Polischuk <andre.polischuk@gmail.com>",
   "license": "MIT"
