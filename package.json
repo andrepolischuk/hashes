@@ -6,15 +6,9 @@
     "hashchange",
     "router"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/andrepolischuk/hsh.git"
-  },
+  "repository": "andrepolischuk/hsh",
   "dependencies": {
     "eventhash": "^0.2.0"
-  },
-  "devDependencies": {
-    "mocha": "^2.1.0"
   },
   "main": "index.js",
   "author": "Andrey Polischuk <andre.polischuk@gmail.com>",

@@ -1,25 +1,12 @@
-# Hsh
+# hsh
 
-  Micro client-side router via hashchange
+  > Micro client-side router via hashchange
 
 ## Instalation
 
-  Browser:
-
-```html
-<script src="https://cdn.rawgit.com/andrepolischuk/hsh/2.1.0/hsh.min.js"></script>
-```
-
-  Component(1):
-
 ```sh
+$ npm install --save hsh
 $ component install andrepolischuk/hsh
-```
-
-  Npm:
-
-```sh
-$ npm install hsh
 ```
 
 ## API

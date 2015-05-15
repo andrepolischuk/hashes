@@ -10,11 +10,8 @@
   "dependencies": {
     "andrepolischuk/eventhash": "^0.2.0"
   },
-  "development": {
-    "component/assert": "^0.5.0"
-  },
-  "main" : "index.js",
-  "scripts" : [
+  "main": "index.js",
+  "scripts": [
     "index.js"
   ],
   "license": "MIT"

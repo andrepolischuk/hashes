@@ -27,6 +27,7 @@ module.exports = hsh;
 
 /**
  * Router
+ *
  * @param {String} path
  * @param {Function} fn
  * @api public
@@ -48,28 +49,26 @@ function hsh(path, fn) {
 }
 
 /**
- * Path prefix
- * @api public
+ * Expose path prefix
  */
 
 hsh.prefix = '';
 
 /**
- * Current path
- * @api public
+ * Expose current path
  */
 
 hsh.current = null;
 
 /**
- * Callbacks
- * @api public
+ * Expose callbacks
  */
 
 hsh.callbacks = [];
 
 /**
  * Show defined context
+ *
  * @param {String} path
  * @api public
  */
@@ -82,6 +81,7 @@ hsh.show = function(path) {
 
 /**
  * Internal redirect /index -> /#/index
+ *
  * @param {String} path
  * @api public
  */
@@ -92,6 +92,7 @@ hsh.redirect = function(path) {
 
 /**
  * External redirect /index -> /index
+ *
  * @param {String} path
  * @api public
  */
@@ -102,6 +103,7 @@ hsh.redirectExternal = function(path) {
 
 /**
  * Start listener
+ *
  * @api public
  */
 
@@ -113,6 +115,7 @@ hsh.start = function() {
 
 /**
  * Hash change handler
+ *
  * @api private
  */
 
@@ -124,6 +127,7 @@ function onhashchange() {
 
 /**
  * Generate RegExp via prefix
+ *
  * @return {RegExp}
  * @api private
  */
@@ -138,6 +142,7 @@ function prefixRegExp() {
 
 /**
  * Execute context
+ *
  * @param {Object} ctx
  * @api private
  */
@@ -156,6 +161,7 @@ function execute(ctx) {
 
 /**
  * Context
+ *
  * @param  {String} path
  * @return {Object}
  * @api private
@@ -168,6 +174,7 @@ function Context(path) {
 
 /**
  * Route
+ *
  * @param {String} path
  * @param {Function} fn
  * @api private
@@ -182,6 +189,7 @@ function Route(path, fn) {
 
 /**
  * Route callback
+ *
  * @return {Function}
  * @api private
  */
@@ -196,6 +204,7 @@ Route.prototype.callback = function() {
 
 /**
  * Route match
+ *
  * @param  {String} path
  * @param  {Object} params
  * @return {Boolean}
@@ -215,6 +224,7 @@ Route.prototype.match = function(path, params) {
 
 /**
  * Convert path to RegExp
+ *
  * @param  {String} path
  * @return {String}
  * @api private
@@ -240,6 +250,7 @@ function pathToRegExp(path) {
 
 /**
  * Convert path to keys array
+ *
  * @param  {String} path
  * @return {Array}
  * @api private
