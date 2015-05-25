@@ -6,6 +6,9 @@
 
 ```sh
 $ npm install --save hsh
+```
+
+```sh
 $ component install andrepolischuk/hsh
 ```
 
