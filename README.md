@@ -2,14 +2,14 @@
 
   > Micro client-side router via hashchange
 
-## Instalation
+## Install
 
 ```sh
-$ npm install --save hsh
+npm install --save hsh
 ```
 
 ```sh
-$ component install andrepolischuk/hsh
+component install andrepolischuk/hsh
 ```
 
 ## API
