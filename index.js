@@ -215,7 +215,7 @@ Route.prototype.match = function(path, params) {
   var pathParams = path.match(this.regexp);
   if (!pathParams) return false;
 
-  for (var i = 0; i < pathParams.length - 1; i++) {
+  for (var i = 0, len = pathParams.length; i < len - 1; i++) {
     params[this.keys[i] || i] = pathParams[i + 1];
   }
 
@@ -237,7 +237,7 @@ function pathToRegExp(path) {
   var pathExp = '^';
   path = path.split('/').splice(1, path.length);
 
-  for (var i = 0; i < path.length; i++) {
+  for (var i = 0, len = path.length; i < len; i++) {
     pathExp += '\\/' + path[i]
       .replace(/(\(|\)|\[|\]|\\|\.|\^|\$|\||\?|\+)/g, '\\$1')
       .replace(/([*])/g, '.*')
@@ -260,7 +260,7 @@ function pathToKeys(path) {
   if (path instanceof RegExp) return [];
   var params = path.match(/:(\w+)/g) || [];
 
-  for (var i = 0; i < params.length; i++) {
+  for (var i = 0, len = params.length; i < len; i++) {
     params[i] = params[i].substr(1);
   }
 
